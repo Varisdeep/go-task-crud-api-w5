@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -56,7 +57,12 @@ func getDeviceByID(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 
 	vars := mux.Vars(r)
-	id := vars["id"]
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 
 	for _, device := range devices {
 		if device.ID == id {
@@ -74,7 +80,12 @@ func updateDevice(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 
 	vars := mux.Vars(r)
-	id := vars["id"]
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 
 	for i, device := range devices {
 		if device.ID == id {
@@ -99,7 +110,12 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 
 	vars := mux.Vars(r)
-	id := vars["id"]
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 
 	for i, device := range devices {
 		if device.ID == id {
